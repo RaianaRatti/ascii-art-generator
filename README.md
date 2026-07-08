@@ -6,7 +6,7 @@ A browser-based tool that converts any image into ASCII art. Upload a photo, cho
 
 Project output in action!
 
-(https://github.com/user-attachments/assets/05fa3acb-d8c1-455e-8b25-0f5330f9081d)
+![Demo Image](ascii-art-generator-demo.png)
 
 ## Features
 
@@ -97,3 +97,4 @@ python logic.py photo.jpg -c "@%#*+=-:. "
 ## License
 
 MIT
+
