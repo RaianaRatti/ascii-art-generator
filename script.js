@@ -1,0 +1,248 @@
+/* ========================================================
+   ASCII Art Generator
+   Upload an image, pick a character ramp, convert to ASCII.
+   ======================================================== */
+
+/* ---------- element references ---------- */
+const fileInput = document.getElementById("file-input");
+const dropzone = document.getElementById("dropzone");
+const dropzoneText = document.getElementById("dropzone-text");
+const previewThumb = document.getElementById("preview-thumb");
+
+const charRampInput = document.getElementById("char-ramp");
+const presetButtons = document.querySelectorAll(".preset-btn");
+
+const widthRange = document.getElementById("width-range");
+const widthValue = document.getElementById("width-value");
+const colorToggle = document.getElementById("color-toggle");
+
+const generateBtn = document.getElementById("generate-btn");
+const outputPanel = document.getElementById("output-panel");
+const asciiOutput = document.getElementById("ascii-output");
+
+const downloadPngBtn = document.getElementById("download-png-btn");
+const downloadTxtBtn = document.getElementById("download-txt-btn");
+
+const sourceCanvas = document.getElementById("source-canvas");
+const renderCanvas = document.getElementById("render-canvas");
+
+/* Roughly corrects for monospace characters being taller than they
+   are wide, so the ASCII output doesn't look vertically stretched. */
+const CHAR_ASPECT = 0.55;
+
+let loadedImage = null;
+let lastAsciiText = "";
+
+/* ---------- image selection ---------- */
+
+dropzone.addEventListener("click", () => fileInput.click());
+
+dropzone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    dropzone.classList.add("dragover");
+});
+
+dropzone.addEventListener("dragleave", () => {
+    dropzone.classList.remove("dragover");
+});
+
+dropzone.addEventListener("drop", (event) => {
+    event.preventDefault();
+    dropzone.classList.remove("dragover");
+    if (event.dataTransfer.files.length > 0) {
+        handleFile(event.dataTransfer.files[0]);
+    }
+});
+
+fileInput.addEventListener("change", () => {
+    if (fileInput.files.length > 0) {
+        handleFile(fileInput.files[0]);
+    }
+});
+
+function handleFile(file) {
+    if (!file.type.startsWith("image/")) {
+        dropzoneText.textContent = "That file isn't an image. Try again.";
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+            loadedImage = img;
+            previewThumb.src = event.target.result;
+            previewThumb.hidden = false;
+            dropzoneText.textContent = file.name;
+            generateBtn.disabled = false;
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+/* ---------- character ramp presets ---------- */
+
+presetButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        charRampInput.value = button.dataset.ramp;
+    });
+});
+
+/* ---------- width slider label ---------- */
+
+widthRange.addEventListener("input", () => {
+    widthValue.textContent = widthRange.value;
+});
+
+/* ---------- generate ---------- */
+
+generateBtn.addEventListener("click", () => {
+    if (!loadedImage) return;
+
+    const ramp = charRampInput.value;
+    if (ramp.length < 2) {
+        alert("Enter at least two characters in the ramp field.");
+        return;
+    }
+
+    const columns = parseInt(widthRange.value, 10);
+    const useColor = colorToggle.checked;
+
+    const { lines, colors } = imageToAscii(loadedImage, ramp, columns);
+    lastAsciiText = lines.join("\n");
+
+    renderToPage(lines, colors, useColor);
+    renderToCanvas(lines, colors, useColor);
+
+    outputPanel.hidden = false;
+    outputPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+/* ---------- core conversion ---------- */
+
+function imageToAscii(image, ramp, columns) {
+    const aspectRatio = image.height / image.width;
+    const rows = Math.max(1, Math.round(columns * aspectRatio * CHAR_ASPECT));
+
+    sourceCanvas.width = columns;
+    sourceCanvas.height = rows;
+    const ctx = sourceCanvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.clearRect(0, 0, columns, rows);
+    ctx.drawImage(image, 0, 0, columns, rows);
+
+    const { data } = ctx.getImageData(0, 0, columns, rows);
+
+    const lines = [];
+    const colors = [];
+
+    for (let y = 0; y < rows; y++) {
+        let line = "";
+        const colorRow = [];
+
+        for (let x = 0; x < columns; x++) {
+            const i = (y * columns + x) * 4;
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const alpha = data[i + 3];
+
+            // treat transparent pixels as blank space
+            if (alpha < 16) {
+                line += " ";
+                colorRow.push("rgb(0,0,0)");
+                continue;
+            }
+
+            const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+            const index = Math.min(
+                ramp.length - 1,
+                Math.floor((luminance / 255) * ramp.length)
+            );
+
+            line += ramp[index];
+            colorRow.push(`rgb(${r},${g},${b})`);
+        }
+
+        lines.push(line);
+        colors.push(colorRow);
+    }
+
+    return { lines, colors };
+}
+
+/* ---------- render to the on-page <pre> ---------- */
+
+function renderToPage(lines, colors, useColor) {
+    if (!useColor) {
+        asciiOutput.textContent = lines.join("\n");
+        return;
+    }
+
+    // color mode needs per-character spans, so build with a fragment
+    asciiOutput.textContent = "";
+    const fragment = document.createDocumentFragment();
+
+    for (let y = 0; y < lines.length; y++) {
+        for (let x = 0; x < lines[y].length; x++) {
+            const span = document.createElement("span");
+            span.textContent = lines[y][x];
+            span.style.color = colors[y][x];
+            fragment.appendChild(span);
+        }
+        fragment.appendChild(document.createTextNode("\n"));
+    }
+
+    asciiOutput.appendChild(fragment);
+}
+
+/* ---------- render to an offscreen canvas, for PNG export ---------- */
+
+function renderToCanvas(lines, colors, useColor) {
+    const fontSize = 8;
+    const ctx = renderCanvas.getContext("2d");
+    ctx.font = `${fontSize}px "DejaVu Sans Mono", "Courier New", monospace`;
+
+    const charWidth = ctx.measureText("M").width;
+    const charHeight = fontSize * 1.15;
+
+    const columns = lines[0] ? lines[0].length : 0;
+    const rows = lines.length;
+
+    renderCanvas.width = Math.ceil(columns * charWidth);
+    renderCanvas.height = Math.ceil(rows * charHeight);
+
+    // re-apply font, it resets when the canvas is resized
+    ctx.font = `${fontSize}px "DejaVu Sans Mono", "Courier New", monospace`;
+    ctx.textBaseline = "top";
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, renderCanvas.width, renderCanvas.height);
+
+    for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < columns; x++) {
+            ctx.fillStyle = useColor ? colors[y][x] : "#ffb000";
+            ctx.fillText(lines[y][x], x * charWidth, y * charHeight);
+        }
+    }
+}
+
+/* ---------- downloads ---------- */
+
+downloadPngBtn.addEventListener("click", () => {
+    if (!lastAsciiText) return;
+    const link = document.createElement("a");
+    link.download = "ascii-art.png";
+    link.href = renderCanvas.toDataURL("image/png");
+    link.click();
+});
+
+downloadTxtBtn.addEventListener("click", () => {
+    if (!lastAsciiText) return;
+    const blob = new Blob([lastAsciiText], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.download = "ascii-art.txt";
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    URL.revokeObjectURL(link.href);
+});

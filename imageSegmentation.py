@@ -6,12 +6,16 @@ import tkinter as tk
 from tkinter import filedialog, Button, Label
 
 def select_image():
-    filepath = filedialog.askopenfilename()
-    if not filepath:
+    file_path = filedialog.askopenfilename()
+    if not file_path:
+        return  # user cancelled the dialog
+
+    image = cv2.imread(file_path)
+    if image is None:
+        print(f"Failed to load image at: {file_path}")
         return
-    image = cv2.imread(filepath)
+
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    segment_image(image)
 
 # handles actual image segmentation process
 def segment_image(image):
