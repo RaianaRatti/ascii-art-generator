@@ -622,3 +622,34 @@ input[type="checkbox"] {
     border-color: var(--accent);
     box-shadow: 0 0 0 2px var(--faint);
 }
+
+.output-mode-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.output-mode-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 8px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.output-mode-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.output-mode-btn[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--faint);
+}

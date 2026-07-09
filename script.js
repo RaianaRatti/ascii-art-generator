@@ -29,6 +29,7 @@ const renderCanvas = document.getElementById("render-canvas");
 const themeToggleBtn = document.getElementById("theme-toggle-btn");
 const themePanel = document.getElementById("theme-panel");
 const themePanelClose = document.getElementById("theme-panel-close");
+const outputModeButtons = document.querySelectorAll(".output-mode-btn");
 
 /* Roughly corrects for monospace characters being taller than they
    are wide, so the ASCII output doesn't look vertically stretched. */
@@ -66,7 +67,53 @@ function applyTheme(themeId) {
     document.querySelectorAll(".theme-swatch").forEach((swatch) => {
         swatch.setAttribute("aria-pressed", String(swatch.dataset.theme === themeId));
     });
+
+    // the output box color depends on the current hue, so recompute it
+    // for whichever dark/light output mode is currently selected
+    applyOutputMode(currentOutputMode);
 }
+
+/* ---------- output box color (independent of the page theme) ---------- */
+
+const OUTPUT_MODE_STORAGE_KEY = "ascii-art-output-mode";
+const DEFAULT_OUTPUT_MODE = "light";
+
+// per-hue output colors; the page theme controls the hue, this toggle
+// controls whether the output box itself renders in its dark or light look
+const OUTPUT_HUES = {
+    red: { dark: { bg: "#000000", text: "#ff4d4d" }, light: { bg: "#ffffff", text: "#d6323c" } },
+    orange: { dark: { bg: "#000000", text: "#ff8c1a" }, light: { bg: "#ffffff", text: "#d1660b" } },
+    yellow: { dark: { bg: "#000000", text: "#ffe14f" }, light: { bg: "#ffffff", text: "#b8860b" } },
+    green: { dark: { bg: "#000000", text: "#39ff6a" }, light: { bg: "#ffffff", text: "#1f8a44" } },
+    blue: { dark: { bg: "#000000", text: "#3fa9ff" }, light: { bg: "#ffffff", text: "#1d6fd6" } },
+    purple: { dark: { bg: "#000000", text: "#c86bff" }, light: { bg: "#ffffff", text: "#7c3fd1" } },
+    pink: { dark: { bg: "#000000", text: "#ff4fa3" }, light: { bg: "#ffffff", text: "#d63384" } },
+};
+
+let currentOutputMode = localStorage.getItem(OUTPUT_MODE_STORAGE_KEY) || DEFAULT_OUTPUT_MODE;
+
+function currentHue() {
+    const theme = document.documentElement.getAttribute("data-theme") || DEFAULT_THEME;
+    return theme.replace(/^dark-|^light-/, "");
+}
+
+function applyOutputMode(mode) {
+    currentOutputMode = mode;
+    localStorage.setItem(OUTPUT_MODE_STORAGE_KEY, mode);
+
+    const hue = OUTPUT_HUES[currentHue()] ? currentHue() : "orange";
+    const style = OUTPUT_HUES[hue][mode];
+    document.documentElement.style.setProperty("--output-bg", style.bg);
+    document.documentElement.style.setProperty("--output-text", style.text);
+
+    outputModeButtons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.outputMode === mode));
+    });
+}
+
+outputModeButtons.forEach((button) => {
+    button.addEventListener("click", () => applyOutputMode(button.dataset.outputMode));
+});
 
 function buildThemeSwatches() {
     THEMES.forEach((theme) => {
