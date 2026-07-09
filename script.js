@@ -51,13 +51,13 @@ const THEMES = [
     { id: "dark-blue", label: "Blue", group: "dark", swatch: "#3fa9ff" },
     { id: "dark-purple", label: "Purple", group: "dark", swatch: "#c86bff" },
     { id: "dark-pink", label: "Pink", group: "dark", swatch: "#ff4fa3" },
-    { id: "light-red", label: "Red", group: "light", swatch: "#d6323c" },
-    { id: "light-orange", label: "Orange", group: "light", swatch: "#d1660b" },
-    { id: "light-yellow", label: "Yellow", group: "light", swatch: "#b8860b" },
-    { id: "light-green", label: "Green", group: "light", swatch: "#1f8a44" },
-    { id: "light-blue", label: "Blue", group: "light", swatch: "#1d6fd6" },
-    { id: "light-purple", label: "Purple", group: "light", swatch: "#7c3fd1" },
-    { id: "light-pink", label: "Pink", group: "light", swatch: "#d63384" },
+    { id: "light-red", label: "Red", group: "light", swatch: "#ff4d4d" },
+    { id: "light-orange", label: "Orange", group: "light", swatch: "#ff8c1a" },
+    { id: "light-yellow", label: "Yellow", group: "light", swatch: "#ffe14f" },
+    { id: "light-green", label: "Green", group: "light", swatch: "#39ff6a" },
+    { id: "light-blue", label: "Blue", group: "light", swatch: "#3fa9ff" },
+    { id: "light-purple", label: "Purple", group: "light", swatch: "#c86bff" },
+    { id: "light-pink", label: "Pink", group: "light", swatch: "#ff4fa3" },
 ];
 
 function applyTheme(themeId) {
