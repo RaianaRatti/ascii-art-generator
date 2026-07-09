@@ -527,7 +527,7 @@ input[type="checkbox"] {
     border: 1px solid var(--border);
     border-radius: 50%;
     color: var(--accent);
-    font-size: 22px;
+    font-size: 30px;
     line-height: 1;
     cursor: pointer;
     z-index: 60;
