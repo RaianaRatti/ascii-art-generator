@@ -58,6 +58,7 @@ const THEMES = [
     { id: "light-blue", label: "Blue", group: "light", swatch: "#3fa9ff" },
     { id: "light-purple", label: "Purple", group: "light", swatch: "#c86bff" },
     { id: "light-pink", label: "Pink", group: "light", swatch: "#ff4fa3" },
+    { id: "bw", label: "B&W", group: "mono", swatch: "#ffffff" },
 ];
 
 function applyTheme(themeId) {
@@ -88,6 +89,7 @@ const OUTPUT_HUES = {
     blue: { dark: { bg: "#000000", text: "#3fa9ff" }, light: { bg: "#ffffff", text: "#1d6fd6" } },
     purple: { dark: { bg: "#000000", text: "#c86bff" }, light: { bg: "#ffffff", text: "#7c3fd1" } },
     pink: { dark: { bg: "#000000", text: "#ff4fa3" }, light: { bg: "#ffffff", text: "#d63384" } },
+    bw: { dark: { bg: "#000000", text: "#ffffff" }, light: { bg: "#ffffff", text: "#000000" } },
 };
 
 let currentOutputMode = localStorage.getItem(OUTPUT_MODE_STORAGE_KEY) || DEFAULT_OUTPUT_MODE;
