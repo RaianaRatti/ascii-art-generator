@@ -14,8 +14,8 @@ html[data-theme="dark-red"] {
     --faint: rgba(255, 77, 77, 0.12);
     --text: #f5c9c9;
     --btn-text: #240d0d;
-    --output-bg: #000000;
-    --output-text: #ff4d4d;
+    --output-bg: #ffffff;
+    --output-text: #d6323c;
     --danger: #ff8c42;
     --scanline: rgba(255, 255, 255, 0.02);
 }
@@ -29,8 +29,8 @@ html[data-theme="dark-orange"] {
     --faint: rgba(255, 140, 26, 0.12);
     --text: #f5ddc0;
     --btn-text: #241708;
-    --output-bg: #000000;
-    --output-text: #ff8c1a;
+    --output-bg: #ffffff;
+    --output-text: #d1660b;
     --danger: #ff5d5d;
     --scanline: rgba(255, 255, 255, 0.02);
 }
@@ -44,8 +44,8 @@ html[data-theme="dark-yellow"] {
     --faint: rgba(255, 225, 79, 0.12);
     --text: #f5edc9;
     --btn-text: #201d0f;
-    --output-bg: #000000;
-    --output-text: #ffe14f;
+    --output-bg: #ffffff;
+    --output-text: #b8860b;
     --danger: #ff5d5d;
     --scanline: rgba(255, 255, 255, 0.02);
 }
@@ -59,8 +59,8 @@ html[data-theme="dark-green"] {
     --faint: rgba(57, 255, 106, 0.12);
     --text: #c9f5d2;
     --btn-text: #08170c;
-    --output-bg: #000000;
-    --output-text: #39ff6a;
+    --output-bg: #ffffff;
+    --output-text: #1f8a44;
     --danger: #ff5d5d;
     --scanline: rgba(255, 255, 255, 0.02);
 }
@@ -74,8 +74,8 @@ html[data-theme="dark-blue"] {
     --faint: rgba(63, 169, 255, 0.12);
     --text: #c9def5;
     --btn-text: #0d1524;
-    --output-bg: #000000;
-    --output-text: #3fa9ff;
+    --output-bg: #ffffff;
+    --output-text: #1d6fd6;
     --danger: #ff5d5d;
     --scanline: rgba(255, 255, 255, 0.02);
 }
@@ -89,8 +89,8 @@ html[data-theme="dark-purple"] {
     --faint: rgba(200, 107, 255, 0.12);
     --text: #e3d5f7;
     --btn-text: #170f24;
-    --output-bg: #000000;
-    --output-text: #c86bff;
+    --output-bg: #ffffff;
+    --output-text: #7c3fd1;
     --danger: #ff6767;
     --scanline: rgba(255, 255, 255, 0.02);
 }
@@ -104,8 +104,8 @@ html[data-theme="dark-pink"] {
     --faint: rgba(255, 79, 163, 0.12);
     --text: #f7c9e0;
     --btn-text: #1f0d17;
-    --output-bg: #000000;
-    --output-text: #ff4fa3;
+    --output-bg: #ffffff;
+    --output-text: #d63384;
     --danger: #ff5d5d;
     --scanline: rgba(255, 255, 255, 0.02);
 }
