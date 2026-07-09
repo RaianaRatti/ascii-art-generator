@@ -5,10 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASCII Art Generator</title>
     <link rel="stylesheet" href="style.css">
+    <script>
+        (function () {
+            var saved = localStorage.getItem("ascii-art-theme");
+            if (saved) document.documentElement.setAttribute("data-theme", saved);
+        })();
+    </script>
 </head>
 <body>
 
     <div class="crt-overlay"></div>
+
+    <button type="button" id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Open theme settings" aria-expanded="false" title="Theme settings">&#9881;</button>
+
+    <aside class="theme-panel" id="theme-panel" hidden>
+        <div class="theme-panel-header">
+            <span>THEME</span>
+            <button type="button" id="theme-panel-close" class="theme-panel-close" aria-label="Close theme settings">&times;</button>
+        </div>
+
+        <div class="theme-group">
+            <p class="theme-group-label">Dark</p>
+            <div class="theme-swatches" data-group="dark"></div>
+        </div>
+
+        <div class="theme-group">
+            <p class="theme-group-label">Light</p>
+            <div class="theme-swatches" data-group="light"></div>
+        </div>
+    </aside>
 
     <main class="terminal">
 

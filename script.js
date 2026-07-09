@@ -26,12 +26,93 @@ const downloadTxtBtn = document.getElementById("download-txt-btn");
 const sourceCanvas = document.getElementById("source-canvas");
 const renderCanvas = document.getElementById("render-canvas");
 
+const themeToggleBtn = document.getElementById("theme-toggle-btn");
+const themePanel = document.getElementById("theme-panel");
+const themePanelClose = document.getElementById("theme-panel-close");
+
 /* Roughly corrects for monospace characters being taller than they
    are wide, so the ASCII output doesn't look vertically stretched. */
 const CHAR_ASPECT = 0.55;
 
 let loadedImage = null;
 let lastAsciiText = "";
+
+/* ---------- theme picker ---------- */
+
+const THEME_STORAGE_KEY = "ascii-art-theme";
+const DEFAULT_THEME = "dark-amber";
+
+const THEMES = [
+    { id: "dark-amber", label: "Amber", group: "dark", swatch: "#ffb000" },
+    { id: "dark-green", label: "Matrix", group: "dark", swatch: "#39ff6a" },
+    { id: "dark-purple", label: "Neon", group: "dark", swatch: "#c86bff" },
+    { id: "light-pink", label: "Pink", group: "light", swatch: "#d63384" },
+    { id: "light-blue", label: "Blue", group: "light", swatch: "#1d6fd6" },
+    { id: "light-yellow", label: "Yellow", group: "light", swatch: "#b8860b" },
+];
+
+function applyTheme(themeId) {
+    document.documentElement.setAttribute("data-theme", themeId);
+    localStorage.setItem(THEME_STORAGE_KEY, themeId);
+
+    document.querySelectorAll(".theme-swatch").forEach((swatch) => {
+        swatch.setAttribute("aria-pressed", String(swatch.dataset.theme === themeId));
+    });
+}
+
+function buildThemeSwatches() {
+    THEMES.forEach((theme) => {
+        const group = document.querySelector(`.theme-swatches[data-group="${theme.group}"]`);
+        if (!group) return;
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "theme-swatch";
+        button.dataset.theme = theme.id;
+        button.style.setProperty("--sw", theme.swatch);
+        button.title = theme.label;
+        button.setAttribute("aria-label", theme.label);
+        button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => applyTheme(theme.id));
+
+        group.appendChild(button);
+    });
+}
+
+function openThemePanel() {
+    themePanel.hidden = false;
+    themeToggleBtn.setAttribute("aria-expanded", "true");
+}
+
+function closeThemePanel() {
+    themePanel.hidden = true;
+    themeToggleBtn.setAttribute("aria-expanded", "false");
+}
+
+themeToggleBtn.addEventListener("click", () => {
+    if (themePanel.hidden) {
+        openThemePanel();
+    } else {
+        closeThemePanel();
+    }
+});
+
+themePanelClose.addEventListener("click", closeThemePanel);
+
+document.addEventListener("click", (event) => {
+    if (themePanel.hidden) return;
+    if (themePanel.contains(event.target) || themeToggleBtn.contains(event.target)) return;
+    closeThemePanel();
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !themePanel.hidden) {
+        closeThemePanel();
+    }
+});
+
+buildThemeSwatches();
+applyTheme(document.documentElement.getAttribute("data-theme") || DEFAULT_THEME);
 
 /* ---------- image selection ---------- */
 
@@ -200,6 +281,10 @@ function renderToPage(lines, colors, useColor) {
 /* ---------- render to an offscreen canvas, for PNG export ---------- */
 
 function renderToCanvas(lines, colors, useColor) {
+    const rootStyle = getComputedStyle(document.documentElement);
+    const outputBg = rootStyle.getPropertyValue("--output-bg").trim() || "#000000";
+    const outputText = rootStyle.getPropertyValue("--output-text").trim() || "#ffb000";
+
     const fontSize = 8;
     const ctx = renderCanvas.getContext("2d");
     ctx.font = `${fontSize}px "DejaVu Sans Mono", "Courier New", monospace`;
@@ -216,12 +301,12 @@ function renderToCanvas(lines, colors, useColor) {
     // re-apply font, it resets when the canvas is resized
     ctx.font = `${fontSize}px "DejaVu Sans Mono", "Courier New", monospace`;
     ctx.textBaseline = "top";
-    ctx.fillStyle = "#000000";
+    ctx.fillStyle = outputBg;
     ctx.fillRect(0, 0, renderCanvas.width, renderCanvas.height);
 
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < columns; x++) {
-            ctx.fillStyle = useColor ? colors[y][x] : "#ffb000";
+            ctx.fillStyle = useColor ? colors[y][x] : outputText;
             ctx.fillText(lines[y][x], x * charWidth, y * charHeight);
         }
     }
