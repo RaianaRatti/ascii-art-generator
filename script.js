@@ -290,7 +290,7 @@ function renderToCanvas(lines, colors, useColor) {
     ctx.font = `${fontSize}px "DejaVu Sans Mono", "Courier New", monospace`;
 
     const charWidth = ctx.measureText("M").width;
-    const charHeight = fontSize * 1.15;
+    const charHeight = fontSize;
 
     const columns = lines[0] ? lines[0].length : 0;
     const rows = lines.length;

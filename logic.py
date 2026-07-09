@@ -1,21 +1,7 @@
-# grabcut
-
-"""
-ASCII Art Generator - core conversion logic (command line version)
-
-This mirrors what script.js does in the browser, so the same tool
-is usable from the command line without opening index.html.
-
-Usage:
-    python logic.py photo.jpg
-    python logic.py photo.jpg -o art.txt -w 150 -c "@%#*+=-:. "
-    python logic.py photo.jpg -o art.png --color
-"""
-
 import argparse
 import os
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont # type:ignore
 
 DEFAULT_RAMP = "@%#*+=-:. "
 
