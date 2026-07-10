@@ -230,6 +230,21 @@ html[data-theme="bw"] {
     --scanline: rgba(255, 255, 255, 0.02);
 }
 
+html[data-theme="wb"] {
+    --bg: #ffffff;
+    --panel: #f0f0f0;
+    --input-bg: #f7f7f7;
+    --accent: #000000;
+    --border: #888888;
+    --faint: rgba(0, 0, 0, 0.08);
+    --text: #1a1a1a;
+    --btn-text: #ffffff;
+    --output-bg: #000000;
+    --output-text: #ffffff;
+    --danger: #666666;
+    --scanline: rgba(0, 0, 0, 0.03);
+}
+
 :root {
     --mono: "DejaVu Sans Mono", "Liberation Mono", "Courier New", monospace;
 }
@@ -642,6 +657,10 @@ input[type="checkbox"] {
 
 .theme-swatches[data-group="mono"] .theme-swatch {
     background: linear-gradient(135deg, #000000 50%, #ffffff 50%);
+}
+
+.theme-swatches[data-group="mono"] .theme-swatch[data-theme="wb"] {
+    background: linear-gradient(135deg, #ffffff 50%, #000000 50%);
 }
 
 .theme-swatch:hover {
