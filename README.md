@@ -2,7 +2,7 @@
 
 A browser-based tool that converts any image into ASCII art. Upload a photo, choose the characters used to represent brightness, and generate a text or image version of the result. A matching command-line script is included for use outside the browser.
 
-**Live demo:** [ascii-art-generator-lemon.vercel.app](https://ascii-art-generator-lemon.vercel.app/) (deployed on Vercel)
+**Live demo:** [ascii-art-generator-lemon.vercel.app](https://ascii-art-generator-lemon.vercel.app/)
 
 ## Project in Action
 
